@@ -33,7 +33,7 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-tokyo-night)
-(setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 18))
+(setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 28))
 (set-frame-parameter (selected-frame) 'alpha '(90 . 90))
 (add-to-list 'default-frame-alist '(alpha . (90 . 90)))
 
@@ -43,6 +43,15 @@
       org-hide-block-startup nil
       org-src-preserve-indentation nil
       org-edit-src-content-indentation 0)
+
+(after! evil
+  ;; Treat dash (-) as part of word
+  (modify-syntax-entry ?- "w" (standard-syntax-table))
+  (modify-syntax-entry ?- "w" (syntax-table)))
+
+;; Also works for symbol-based motions like `yiw`, `ciw`, etc.
+(after! evil
+  (setq evil-symbol-word-search t))
 
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
@@ -85,6 +94,24 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+(use-package fzf
+  :commands (fzf fzf-git fzf-grep fzf-git-grep)
+  :init
+  (setq fzf/args "-x --print-query --margin=1,0 --no-hscroll"
+        fzf/executable "fzf"
+        fzf/git-grep-args "-i --line-number %s"
+        fzf/grep-command "rg --no-heading -nH"
+        fzf/position-bottom t
+        fzf/window-height 15))
+
+
+;; Enable fuzzy matching everywhere
+(setq completion-styles '(orderless)
+      completion-category-defaults nil
+      completion-category-overrides '((file (styles . (orderless)))))
+
+(setq consult-fd-args "fd --color=never --type f --hidden --follow --exclude .git")
+
 ;; Base dir for ripgrep
 (defvar my/base-dir (getenv "HOME")
   "Base directory for project-wide grep-like commands.")
@@ -113,13 +140,44 @@
   (let ((default-directory my/base-dir))
     (consult-fd)))
 
+(defun my/fzf-find-files ()
+  "Fuzzy find files in base dir using fzf."
+  (interactive)
+  (let ((default-directory my/base-dir))
+    (fzf)))
+
+(defun my/fzf-base-dir ()
+  "FZF using files in `my/base-dir` via fd."
+  (interactive)
+  (let ((process-environment
+         (cons (format "FZF_DEFAULT_COMMAND=fd --type f --hidden --follow --exclude .git . %s" my/base-dir)
+               process-environment))
+        (default-directory my/base-dir))
+    (fzf)))
+
+
+(defun my/consult-fd-doom ()
+  "Run consult-fd in ~/.config/doom"
+  (interactive)
+  (let ((default-directory "~/.config/doom"))
+    (consult-fd)))
+
+(defun my/fzf-doom-config ()
+  "Fuzzy find files in ~/.config/doom using fzf."
+  (interactive)
+  (let ((default-directory "~/.config/doom"))
+    (fzf)))
+
+
 
 (map! :leader
       (:prefix ("f" . "file/find")
-       :desc "ripgrep from base dir" "g" #'my/consult-ripgrep-base
-       :desc "Find file from base dir (fd)" "f" #'my/consult-fd
-       :desc "Find buffer file" "b" #'consult-buffer
-       :desc "ripgrep symbol from base dir" "s" #'my/consult-ripgrep-symbol-base)
+       :desc "ripgrep from base dir"       "g" #'my/consult-ripgrep-base
+       :desc "Find file from base dir"     "f" #'my/fzf-base-dir
+       :desc "Find buffer"                 "b" #'consult-buffer
+       :desc "ripgrep symbol from base"    "s" #'my/consult-ripgrep-symbol-base
+       :desc "Find Doom config via fzf"    "i" #'my/fzf-doom-config
+       :desc "Find Doom config files"      "o" #'my/consult-fd-doom)
       (:prefix ("c" . "custom")
        :desc "Set base directory" "r" #'my/set-base-dir
        :desc "Dired at current file" "d"

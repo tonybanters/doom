@@ -8,6 +8,8 @@
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 ;; (package! some-package)
 (package! ox-hugo)
+(package! fzf)
+;; (package! consult-fzf)
 
 
 ;; To install a package directly from a remote git repo, you must specify a
