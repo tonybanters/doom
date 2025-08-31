@@ -128,3 +128,5 @@
          (dired (file-name-directory (or buffer-file-name default-directory)))))
       (:prefix ("b" . "buffers")
        :desc "Buffer menu" "m" #'ibuffer))
+
+(map! :n "gr" #'+lookup/references)
