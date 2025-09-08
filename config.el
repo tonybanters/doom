@@ -197,10 +197,7 @@
 
 (map! :n "gr" #'+lookup/references)
 
-;; (after! org
-;;   (setq org-superstar-headline-bullets-list '("◉" "●" "○" "◆" "●" "○" "◆")
-;;   )
-;; )
+(setq org-agenda-files '("~/repos/agendas/personal.org" "~/repos/agendas/work.org"))
 
 (after! org
   ;; Enable org-superstar-mode automatically in org buffers
