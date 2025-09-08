@@ -9,6 +9,7 @@
 ;; (package! some-package)
 (package! ox-hugo)
 (package! fzf)
+(package! org-superstar)
 ;; (package! consult-fzf)
 
 

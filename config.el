@@ -168,7 +168,13 @@
 (defun my/fzf-doom-config ()
   "Fuzzy find files in ~/.config/doom using fzf."
   (interactive)
-  (let ((default-directory "~/.config/doom"))
+  (let ((default-directory "/home/tony/.config/doom"))
+    (fzf)))
+
+(defun my/fzf-home ()
+  "Fuzzy find files in ~/.config/doom using fzf."
+  (interactive)
+  (let ((default-directory "/home/tony/tonybtw"))
     (fzf)))
 
 
@@ -176,11 +182,13 @@
 (map! :leader
       (:prefix ("f" . "file/find")
        :desc "ripgrep from base dir"       "g" #'my/consult-ripgrep-base
-       :desc "Find file from base dir"     "f" #'my/fzf-base-dir
+       ;; :desc "Find file from base dir"     "f" #'my/fzf-find-files
+       :desc "Find file from base dir"     "f" #'my/fzf-home
+       ;; :desc "Find file from base dir"     "f" #'my/consult-fd
        :desc "Find buffer"                 "b" #'consult-buffer
        :desc "ripgrep symbol from base"    "s" #'my/consult-ripgrep-symbol-base
        :desc "Find Doom config via fzf"    "i" #'my/fzf-doom-config
-       :desc "Find Doom config files"      "o" #'my/consult-fd-doom)
+       :desc "Find Recent files"           "o" #'consult-recent-file)
       (:prefix ("c" . "custom")
        :desc "Set base directory" "r" #'my/set-base-dir
        :desc "Dired at current file" "d"
@@ -189,3 +197,15 @@
          (dired (file-name-directory (or buffer-file-name default-directory)))))
       (:prefix ("b" . "buffers")
        :desc "Buffer menu" "m" #'ibuffer))
+
+(map! :n "gr" #'+lookup/references)
+
+(setq org-agenda-files '("~/repos/agendas/personal.org" "~/repos/agendas/work.org"))
+
+(after! org
+  ;; Enable org-superstar-mode automatically in org buffers
+  (add-hook 'org-mode-hook #'org-superstar-mode)
+
+  ;; Custom bullet characters
+  (setq org-superstar-headline-bullets-list
+        '("◉" "●" "○" "◆" "●" "○" "◆")))
