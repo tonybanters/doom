@@ -174,13 +174,32 @@
   (let ((default-directory "/home/tony/tonybtw"))
     (fzf)))
 
+(after! (dired evil-collection)
+  (require 'dired-aux)
+  (map! :map dired-mode-map
+        :n "."   #'dired-create-empty-file
+        :n "g ." #'dired-clean-directory))
+
+;; Terminal helpers
+(defun tony/ansi-term-here ()
+  (interactive)
+  (let ((default-directory (or (and (buffer-file-name)
+                                    (file-name-directory (buffer-file-name)))
+                               default-directory)))
+    (ansi-term (or (getenv "SHELL") "/bin/bash"))))
+
+;; Bind under Doom’s toggle prefix since it’s unused on your setup
+(after! term
+  (map! :leader
+        :desc "Terminal here (ansi-term)" "t o" #'tony/ansi-term-here
+))
 
 
 (map! :leader
       (:prefix ("f" . "file/find")
        :desc "ripgrep from base dir"       "g" #'my/consult-ripgrep-base
        ;; :desc "Find file from base dir"     "f" #'my/fzf-find-files
-       :desc "Find file from base dir"     "f" #'my/fzf-home
+       :desc "Find file from base dir"     "f" #'my/consult-fd
        ;; :desc "Find file from base dir"     "f" #'my/consult-fd
        :desc "Find buffer"                 "b" #'consult-buffer
        :desc "ripgrep symbol from base"    "s" #'my/consult-ripgrep-symbol-base
@@ -197,7 +216,8 @@
 
 (map! :n "gr" #'+lookup/references)
 
-(setq org-agenda-files '("~/repos/agendas/personal.org" "~/repos/agendas/work.org"))
+; (setq org-agenda-files '("~/repos/agendas/personal.org" "~/repos/agendas/work.org"))
+(setq org-agenda-files '("~/repos/agendas/private.org"))
 
 (after! org
   ;; Enable org-superstar-mode automatically in org buffers
