@@ -53,6 +53,9 @@
 (after! evil
   (setq evil-symbol-word-search t))
 
+;; Make C-c quit insert mode in Evil
+(define-key evil-insert-state-map (kbd "C-c") 'evil-normal-state)
+
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
