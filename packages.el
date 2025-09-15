@@ -10,6 +10,9 @@
 (package! ox-hugo)
 (package! fzf)
 (package! org-superstar)
+(package! org-fancy-priorities)
+;; (package! org-fancy-priorities-list)
+;; (package! org-pretty-priorities)
 ;; (package! consult-fzf)
 
 

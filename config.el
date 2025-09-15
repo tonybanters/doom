@@ -1,4 +1,4 @@
-;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-G
 
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
@@ -34,6 +34,7 @@
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-tokyo-night)
 (setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 28))
+;; (setq doom-font (font-spec :family "Jost Medium:style=Regular" :size 28))
 (set-frame-parameter (selected-frame) 'alpha '(90 . 90))
 (add-to-list 'default-frame-alist '(alpha . (90 . 90)))
 
@@ -176,15 +177,47 @@
   (interactive)
   (let ((default-directory "/home/tony/tonybtw"))
     (fzf)))
+(use-package org-fancy-priorities
+  :ensure t
+  :hook
+  (org-mode . org-fancy-priorities-mode)
+  :config
+  (setq org-fancy-priorities-list '("⚑" "▲" "»")))
 
+;; (setq
+;;    ;; org-fancy-priorities-list '("[A]" "[B]" "[C]")
+;;    ;; org-fancy-priorities-list '("❗" "[B]" "[C]")
+;;    org-fancy-priorities-list '("🟥" "🟧" "🟨")
+;;    org-priority-faces
+;;    '((?A :foreground "#ff6c6b" :weight bold)
+;;      (?B :foreground "#98be65" :weight bold)
+;;      (?C :foreground "#c678dd" :weight bold))
+;;    org-agenda-block-separator 8411)
 
+;; (defun my/org-pretty-priorities ()
+;;   "Replace A/B/C priority cookies with custom symbols."
+;;   (setq prettify-symbols-alist
+;;         '(("[#A]" . "⚑")  ; High priority → flag
+;;           ("[#B]" . "▲")  ; Medium priority → triangle
+;;           ("[#C]" . "»"))) ; Low priority → arrow
+;;   (prettify-symbols-mode 1))
+
+;; (add-hook 'org-mode-hook #'my/org-pretty-priorities)
+;; (add-hook 'org-agenda-mode-hook #'my/org-pretty-priorities)
+
+;; Colors for agenda view
+;; (custom-set-faces
+;;  '(org-priority ((t (:inherit default))))
+;;  '(org-priority-highest ((t (:foreground "red" :weight bold))))
+;;  '(org-priority-high    ((t (:foreground "yellow" :weight bold))))
+;;  '(org-priority-low     ((t (:foreground "green" :weight bold)))))
 
 (map! :leader
       (:prefix ("f" . "file/find")
        :desc "ripgrep from base dir"       "g" #'my/consult-ripgrep-base
        ;; :desc "Find file from base dir"     "f" #'my/fzf-find-files
-       :desc "Find file from base dir"     "f" #'my/fzf-home
-       ;; :desc "Find file from base dir"     "f" #'my/consult-fd
+       ;; :desc "Find file from base dir"     "f" #'my/fzf-home
+       :desc "Find file from base dir"     "f" #'my/consult-fd
        :desc "Find buffer"                 "b" #'consult-buffer
        :desc "ripgrep symbol from base"    "s" #'my/consult-ripgrep-symbol-base
        :desc "Find Doom config via fzf"    "i" #'my/fzf-doom-config
