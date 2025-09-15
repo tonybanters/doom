@@ -184,39 +184,30 @@
   :config
   (setq org-fancy-priorities-list '("⚑" "▲" "»")))
 
-;; (setq
-;;    ;; org-fancy-priorities-list '("[A]" "[B]" "[C]")
-;;    ;; org-fancy-priorities-list '("❗" "[B]" "[C]")
-;;    org-fancy-priorities-list '("🟥" "🟧" "🟨")
-;;    org-priority-faces
-;;    '((?A :foreground "#ff6c6b" :weight bold)
-;;      (?B :foreground "#98be65" :weight bold)
-;;      (?C :foreground "#c678dd" :weight bold))
-;;    org-agenda-block-separator 8411)
+(after! (dired evil-collection)
+  (require 'dired-aux)
+  (map! :map dired-mode-map
+        :n "."   #'dired-create-empty-file
+        :n "g ." #'dired-clean-directory))
 
-;; (defun my/org-pretty-priorities ()
-;;   "Replace A/B/C priority cookies with custom symbols."
-;;   (setq prettify-symbols-alist
-;;         '(("[#A]" . "⚑")  ; High priority → flag
-;;           ("[#B]" . "▲")  ; Medium priority → triangle
-;;           ("[#C]" . "»"))) ; Low priority → arrow
-;;   (prettify-symbols-mode 1))
+;; Terminal helpers
+(defun tony/ansi-term-here ()
+  (interactive)
+  (let ((default-directory (or (and (buffer-file-name)
+                                    (file-name-directory (buffer-file-name)))
+                               default-directory)))
+    (ansi-term (or (getenv "SHELL") "/bin/bash"))))
 
-;; (add-hook 'org-mode-hook #'my/org-pretty-priorities)
-;; (add-hook 'org-agenda-mode-hook #'my/org-pretty-priorities)
-
-;; Colors for agenda view
-;; (custom-set-faces
-;;  '(org-priority ((t (:inherit default))))
-;;  '(org-priority-highest ((t (:foreground "red" :weight bold))))
-;;  '(org-priority-high    ((t (:foreground "yellow" :weight bold))))
-;;  '(org-priority-low     ((t (:foreground "green" :weight bold)))))
+;; Bind under Doom’s toggle prefix since it’s unused on your setup
+(after! term
+  (map! :leader
+        :desc "Terminal here (ansi-term)" "t o" #'tony/ansi-term-here
+))
 
 (map! :leader
       (:prefix ("f" . "file/find")
        :desc "ripgrep from base dir"       "g" #'my/consult-ripgrep-base
        ;; :desc "Find file from base dir"     "f" #'my/fzf-find-files
-       ;; :desc "Find file from base dir"     "f" #'my/fzf-home
        :desc "Find file from base dir"     "f" #'my/consult-fd
        :desc "Find buffer"                 "b" #'consult-buffer
        :desc "ripgrep symbol from base"    "s" #'my/consult-ripgrep-symbol-base
@@ -233,7 +224,8 @@
 
 (map! :n "gr" #'+lookup/references)
 
-(setq org-agenda-files '("~/repos/agendas/personal.org" "~/repos/agendas/work.org"))
+; (setq org-agenda-files '("~/repos/agendas/personal.org" "~/repos/agendas/work.org"))
+(setq org-agenda-files '("~/repos/agendas/private.org"))
 
 (after! org
   ;; Enable org-superstar-mode automatically in org buffers
