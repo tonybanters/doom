@@ -1,4 +1,4 @@
-;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-G
 
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
@@ -34,6 +34,7 @@
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-tokyo-night)
 (setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 28))
+;; (setq doom-font (font-spec :family "Jost Medium:style=Regular" :size 28))
 (set-frame-parameter (selected-frame) 'alpha '(90 . 90))
 (add-to-list 'default-frame-alist '(alpha . (90 . 90)))
 
@@ -176,6 +177,12 @@
   (interactive)
   (let ((default-directory "/home/tony/tonybtw"))
     (fzf)))
+(use-package org-fancy-priorities
+  :ensure t
+  :hook
+  (org-mode . org-fancy-priorities-mode)
+  :config
+  (setq org-fancy-priorities-list '("⚑" "▲" "»")))
 
 (after! (dired evil-collection)
   (require 'dired-aux)
@@ -198,13 +205,11 @@
 ;;     (interactive)
 ;;     (eshell-interrupt-process)))
 
-
 (map! :leader
       (:prefix ("f" . "file/find")
        :desc "ripgrep from base dir"       "g" #'my/consult-ripgrep-base
        ;; :desc "Find file from base dir"     "f" #'my/fzf-find-files
        :desc "Find file from base dir"     "f" #'my/consult-fd
-       ;; :desc "Find file from base dir"     "f" #'my/consult-fd
        :desc "Find buffer"                 "b" #'consult-buffer
        :desc "ripgrep symbol from base"    "s" #'my/consult-ripgrep-symbol-base
        :desc "Find Doom config via fzf"    "i" #'my/fzf-doom-config
