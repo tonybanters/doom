@@ -184,18 +184,19 @@
         :n "g ." #'dired-clean-directory))
 
 ;; Terminal helpers
-(defun tony/ansi-term-here ()
+(defun tony/eshell-here ()
   (interactive)
   (let ((default-directory (or (and (buffer-file-name)
-                                    (file-name-directory (buffer-file-name)))
-                               default-directory)))
-    (ansi-term (or (getenv "SHELL") "/bin/bash"))))
+        (file-name-directory (buffer-file-name)))
+        default-directory)))
+        (eshell)))
 
-;; Bind under Doom’s toggle prefix since it’s unused on your setup
-(after! term
-  (map! :leader
-        :desc "Terminal here (ansi-term)" "t o" #'tony/ansi-term-here
-))
+
+;; Send C-c to eshell process in normal mode
+;; (evil-define-key 'normal eshell-mode-map (kbd "C-c")
+;;   (lambda ()
+;;     (interactive)
+;;     (eshell-interrupt-process)))
 
 
 (map! :leader
@@ -215,7 +216,10 @@
          (interactive)
          (dired (file-name-directory (or buffer-file-name default-directory)))))
       (:prefix ("b" . "buffers")
-       :desc "Buffer menu" "m" #'ibuffer))
+       :desc "Buffer menu" "m" #'ibuffer)
+      (:prefix ("t" . "terminal")
+      :desc "Terminal here (eshell)" "o" #'tony/eshell-here)
+)
 
 (map! :n "gr" #'+lookup/references)
 
